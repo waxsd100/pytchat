@@ -6,7 +6,7 @@ __version__      = '0.5.6'
 __license__      = 'MIT'
 __author__       = 'Aiagate'
 __author_email__ = '50893541+Aiagate@users.noreply.github.com'
-__url__          = 'https://github.com/taizan-hokuto/pytchat'
+__url__          = 'https://github.com/Aiagate/pytchat'
 
 
 from .exceptions import (
