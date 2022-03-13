@@ -40,6 +40,34 @@ def test_textmessage(mocker):
     assert ret.author.isChatSponsor is False
     assert ret.author.isChatModerator is False
 
+def test_textmessage_nullauthor(mocker):
+    '''text message'''
+    processor = DefaultProcessor()
+    parser = Parser(is_replay=False)
+    _json = _open_file("tests/testdata/default/textmessage_nullauthor.json")
+
+    _, chatdata = parser.parse(parser.get_contents(json.loads(_json))[0])
+    data = {
+        "video_id": "",
+        "timeout": 7,
+        "chatdata": chatdata
+    }
+
+    ret = processor.process([data]).items[0]
+    assert ret.id == "dummy_id"
+    assert ret.message == "dummy_message"
+    assert ret.timestamp == 1570678496000
+    assert ret.datetime == get_local_datetime(TEST_TIMETSTAMP)
+    assert ret.author.name == ""
+    assert ret.author.channelId == "author_channel_id"
+    assert ret.author.channelUrl == "http://www.youtube.com/channel/author_channel_id"
+    assert ret.author.imageUrl == "https://yt3.ggpht.com/------------/AAAAAAAAAAA/AAAAAAAAAAA/xxxxxxxxxxxx/s64-x-x-xx-xx-xx-c0xffffff/photo.jpg"
+    assert ret.author.badgeUrl == ""
+    assert ret.author.isVerified is False
+    assert ret.author.isChatOwner is False
+    assert ret.author.isChatSponsor is False
+    assert ret.author.isChatModerator is False
+
 
 def test_textmessage_replay_member(mocker):
     '''text message replay member'''
