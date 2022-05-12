@@ -65,6 +65,7 @@ class BaseRenderer:
 
     def get_badges(self, renderer):
         self.chat.author.type = ''
+        self.chat.author.label = ''
         isVerified = False
         isChatOwner = False
         isChatSponsor = False
@@ -83,6 +84,7 @@ class BaseRenderer:
             if badge["liveChatAuthorBadgeRenderer"].get("customThumbnail"):
                 isChatSponsor = True
                 self.chat.author.type = 'MEMBER'
+                self.chat.author.label = badge["liveChatAuthorBadgeRenderer"]["accessibility"]["accessibilityData"]["label"]
                 self.get_badgeurl(badge)
         return isVerified, isChatOwner, isChatSponsor, isChatModerator
 
