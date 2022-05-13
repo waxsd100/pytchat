@@ -3,7 +3,7 @@ from .base import BaseRenderer
 
 class LiveChatMembershipItemRenderer(BaseRenderer):
     def settype(self):
-        self.chat.type = "sponsor"
+        self.chat.type = "newSponsor"
 
     def get_authordetails(self):
         super().get_authordetails()
@@ -13,9 +13,9 @@ class LiveChatMembershipItemRenderer(BaseRenderer):
         try:
             message = ''.join([mes.get("text", "")
                            for mes in item["headerSubtext"]["runs"]])
-            self.chat.type = "newSponsor"
             return message, [message]
         except KeyError:
+            self.chat.type = "milestoneChat"
             milestone_text = ''.join([mes.get("text", "")
                            for mes in item["headerPrimaryText"]["runs"]])
             milestone_text = "[" + milestone_text + " " + item["headerSubtext"]["simpleText"] + "]"
@@ -41,8 +41,5 @@ class LiveChatMembershipItemRenderer(BaseRenderer):
                 message = ' '.join([milestone_text, message])
             else:
                 message = milestone_text
-            if message_ex:
-                message_ex[0] = ' '.join([milestone_text, message_ex[0]])
-            else:
-                message_ex = [milestone_text]
+            message_ex = [milestone_text] + message_ex
             return message, message_ex
