@@ -13,6 +13,8 @@ class LiveChatMembershipItemRenderer(BaseRenderer):
         try:
             message = ''.join([mes.get("text", "")
                            for mes in item["headerSubtext"]["runs"]])
+            if 'Upgraded' in message:
+                 self.chat.type = 'upgradedMembership'
             return message, [message]
         except KeyError:
             self.chat.type = "milestoneChat"
