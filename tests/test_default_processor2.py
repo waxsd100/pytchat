@@ -12,8 +12,8 @@ cases = [
     },
     {
         "video_id":"Hj-wnLIYKjw", "seektime":420,
-        "result1":{'superChat': 1, 'newSponsor': 6, 'textMessage': 64, 'donation': 1},
-        "result2":{'': 60, 'MEMBER': 12}
+        "result1":{'superChat': 1, 'newSponsor': 6, 'textMessage': 63, 'donation': 1},
+        "result2":{'': 59, 'MEMBER': 12}
     },
     {
         "video_id":"S8dmq5YIUoc", "seektime":3,
