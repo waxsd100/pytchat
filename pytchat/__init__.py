@@ -2,7 +2,7 @@
 pytchat is a lightweight python library to browse youtube livechat without Selenium or BeautifulSoup.
 """
 __copyright__    = 'Copyright (C) 2019, 2020, 2021 2022 taizan-hokuto'
-__version__      = '0.6.0'
+__version__      = '0.6.1'
 __license__      = 'MIT'
 __author__       = 'waxsd100'
 __author_email__ = '12383342+waxsd100@users.noreply.github.com'
