@@ -37,3 +37,4 @@ temporary/
 # Pypi wheel
 build/
 exclude/
+.idea/
