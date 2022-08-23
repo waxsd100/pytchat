@@ -11,7 +11,7 @@ PATTERN = re.compile(r"(.*)\(([0-9]+)\)$")
 
 PATTERN_YTURL = re.compile(r"((?<=(v|V)/)|(?<=be/)|(?<=(\?|\&)v=)|(?<=embed/))([\w-]+)")
 
-PATTERN_CHANNEL = re.compile(r"\\\"channelId\\\":\\\"(.{24})\\\"")
+PATTERN_CHANNEL = re.compile(r"\"channelId\":\"(.{24})\"")
 
 PATTERN_M_CHANNEL = re.compile(r"\"channelId\":\"(.{24})\"")
 
@@ -100,7 +100,7 @@ def extract_video_id(url_or_id: str) -> str:
 
 
 def get_channelid(client, video_id):
-    resp = client.get("https://www.youtube.com/embed/{}".format(quote(video_id)), headers=config.headers)  
+    resp = client.get("https://www.youtube.com/watch?v={}".format(quote(video_id)), headers=config.headers)  
     match = re.search(PATTERN_CHANNEL, resp.text)
     try:
         if match is None:
