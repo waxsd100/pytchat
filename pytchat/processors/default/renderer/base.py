@@ -59,8 +59,12 @@ class BaseRenderer:
                     'url': r['emoji']['image']['thumbnails'][0].get('url')
                 })
             else:
-                message += r.get('text', '')
-                message_ex.append(r.get('text', ''))
+                if r.get('navigationEndpoint', {}).get('urlEndpoint'):
+                    message += r['navigationEndpoint']['urlEndpoint'].get('url')
+                    message_ex.append(r['navigationEndpoint']['urlEndpoint'].get('url'))
+                else:
+                    message += r.get('text', '')
+                    message_ex.append(r.get('text', ''))
         return message, message_ex
 
     def get_badges(self, renderer):
