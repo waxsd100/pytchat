@@ -175,7 +175,6 @@ class PytchatCore:
         '''
         if self._first_try and not self._is_replay:
             livechat_json = util.get_livechat_json_from_html(client, self._video_id)
-            self._first_try = False
             if livechat_json:
                 return livechat_json
         livechat_json = None
@@ -201,6 +200,12 @@ class PytchatCore:
     def get(self):
         if self.is_alive():
             chat_component = self._get_chat_component()
+            if self._first_try and not self._is_replay:
+                self._first_try = False
+                self.continuation = None
+                self._last_offset_ms = 0
+                self._dat = ''
+                self._setup()
             return self.processor.process([chat_component])
         else:
             return []
