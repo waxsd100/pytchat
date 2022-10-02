@@ -93,7 +93,6 @@ class PytchatCore:
         self.continuation = replay_continuation
         if interruptable:
             signal.signal(signal.SIGINT, lambda a, b: self.terminate())
-        self._first_try = True
         self._setup()
 
     def _setup(self):
@@ -173,11 +172,6 @@ class PytchatCore:
         '''
         Get json which includes chat data.
         '''
-        if self._first_try and not self._is_replay:
-            livechat_json = util.get_livechat_json_from_html(client, self._video_id)
-            self._first_try = False
-            if livechat_json:
-                return livechat_json
         livechat_json = None
         err = None
         if offset_ms < 0:
