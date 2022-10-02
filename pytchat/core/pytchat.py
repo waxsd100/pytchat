@@ -96,11 +96,16 @@ class PytchatCore:
         self._setup()
 
     def _setup(self):
+        """Fetch first continuation parameter,
+        create and start _listen loop.
+        """
         if not self.continuation:
+            self.continuation = util.get_continuation_from_html(
+                self._client,
+                self._video_id,
+                self._topchat_only)
+        if not self.continuation: # if could not get continuation from html
             time.sleep(0.1)  # sleep shortly to prohibit skipping fetching data
-            """Fetch first continuation parameter,
-            create and start _listen loop.
-            """
             self.continuation = liveparam.getparam(
                 self._video_id,
                 channel_id=util.get_channelid(self._client, self._video_id),
@@ -108,7 +113,7 @@ class PytchatCore:
 
     def _get_chat_component(self):
         ''' Fetch chat data and store them into buffer,
-        get next continuaiton parameter and loop.
+        get next continuation parameter and loop.
 
         Parameter
         ---------
