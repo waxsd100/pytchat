@@ -71,7 +71,6 @@ class PytchatCore:
                  ):
         self._client = client
         self._video_id = util.extract_video_id(video_id)
-        self._channel_id = util.get_channelid(self._client, self._video_id)
         self.seektime = seektime
         if isinstance(processor, tuple):
             self.processor = Combinator(processor)
@@ -105,7 +104,7 @@ class PytchatCore:
             """
             self.continuation = liveparam.getparam(
                 self._video_id,
-                channel_id=self._channel_id,
+                channel_id=util.get_channelid(self._client, self._video_id),
                 past_sec=3)
 
     def _get_chat_component(self):
@@ -157,7 +156,7 @@ class PytchatCore:
                 self._parser.is_replay = True
                 self._fetch_url = config._smr
                 continuation = arcparam.getparam(
-                    self._video_id, self.seektime, self._topchat_only, self._channel_id)
+                    self._video_id, self.seektime, self._topchat_only, util.get_channelid(client, self._video_id))
                 livechat_json = self._get_livechat_json(
                     continuation, client, replay=True, offset_ms=self.seektime * 1000)
                 reload_continuation = self._parser.reload_continuation(
