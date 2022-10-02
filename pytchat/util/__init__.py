@@ -15,11 +15,6 @@ PATTERN_CHANNEL = re.compile(r"\"channelId\":\"(.{24})\"")
 
 PATTERN_M_CHANNEL = re.compile(r"\"channelId\":\"(.{24})\"")
 
-PATTERN_INITIAL_BOUNDARY_RE = r'\s*(?:var\s+(?:meta|head)|</script|\n)'
-
-PATTERN_YT_INITIAL_DATA_RE = r'(?:window\s*\[\s*["\']ytInitialData["\']\s*\]|ytInitialData)\s*=\s*({.+?})\s*;' + PATTERN_INITIAL_BOUNDARY_RE
-
-
 YT_VIDEO_ID_LENGTH = 11
 
 CLIENT_VERSION = ''.join(("2.", (datetime.datetime.today() - datetime.timedelta(days=1)).strftime("%Y%m%d"), ".01.00"))
@@ -118,6 +113,7 @@ def get_channelid(client, video_id):
 
 def get_channelid_2nd(client, video_id):
     resp = client.get("https://m.youtube.com/watch?v={}".format(quote(video_id)), headers=config.m_headers)  
+    
     match = re.search(PATTERN_M_CHANNEL, resp.text)
     if match is None:
         raise InvalidVideoIdException(f"Cannot find channel id for video id:{video_id}. This video id seems to be invalid.")
@@ -126,26 +122,6 @@ def get_channelid_2nd(client, video_id):
     except IndexError:
         raise InvalidVideoIdException(f"Invalid video id: {video_id}")
     return ret
-
-
-def get_livechat_json_from_html(client, video_id):
-    try:
-        resp = client.get("https://www.youtube.com/live_chat?v={}".format(quote(video_id)), headers=config.headers)
-    except (httpx.ConnectTimeout, httpx.ReadTimeout, httpx.ConnectError) as e:
-        return
-    match = re.search(PATTERN_YT_INITIAL_DATA_RE, resp.text)
-    if match is None:
-        return
-    try:
-        ret = match.group(1)
-    except IndexError:
-        return
-    ytInitialData_json = json.loads(ret)
-    try:
-        livechat_json = {'responseContext': {}, 'continuationContents': {'liveChatContinuation': ytInitialData_json['contents']['liveChatRenderer']}}
-    except KeyError:
-        return
-    return livechat_json
 
 
 async def get_channelid_async(client, video_id):
