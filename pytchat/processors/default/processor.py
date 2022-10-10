@@ -10,6 +10,8 @@ from .renderer.membership import LiveChatMembershipItemRenderer
 from .renderer.donation import LiveChatDonationAnnouncementRenderer
 from .renderer.sponsorshipsgiftpurchase import LiveChatSponsorshipsGiftPurchaseAnnouncementRenderer
 from .renderer.sponsorshipsgiftredemption import LiveChatSponsorshipsGiftRedemptionAnnouncementRenderer
+from .renderer.viewerengagementmessage import LiveChatViewerEngagementMessageRenderer
+from .renderer.modechangemessage import LiveChatModeChangeMessageRenderer
 from .. chat_processor import ChatProcessor
 from ... import config
 
@@ -131,6 +133,8 @@ class DefaultProcessor(ChatProcessor):
             "liveChatDonationAnnouncementRenderer": LiveChatDonationAnnouncementRenderer(),
             "liveChatSponsorshipsGiftPurchaseAnnouncementRenderer": LiveChatSponsorshipsGiftPurchaseAnnouncementRenderer(),
             "liveChatSponsorshipsGiftRedemptionAnnouncementRenderer": LiveChatSponsorshipsGiftRedemptionAnnouncementRenderer(),
+            "liveChatViewerEngagementMessageRenderer": LiveChatViewerEngagementMessageRenderer(),
+            "liveChatModeChangeMessageRenderer": LiveChatModeChangeMessageRenderer(),
         }
 
     def process(self, chat_components: list):

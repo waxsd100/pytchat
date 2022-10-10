@@ -20,8 +20,10 @@ class LiveChatMembershipItemRenderer(BaseRenderer):
             self.chat.type = "milestoneChat"
             milestone_text = ''.join([mes.get("text", "")
                            for mes in item["headerPrimaryText"]["runs"]])
-            milestone_text = "[" + milestone_text + " " + item["headerSubtext"]["simpleText"] + "]"
-
+            try:
+                milestone_text = "[" + milestone_text + " " + item["headerSubtext"]["simpleText"] + "]"
+            except KeyError:
+                milestone_text = "[" + milestone_text + "]"
             message = ''
             message_ex = []
             runs = item.get("message", {}).get("runs", {})
@@ -38,7 +40,6 @@ class LiveChatMembershipItemRenderer(BaseRenderer):
                 else:
                     message += r.get('text', '')
                     message_ex.append(r.get('text', ''))
-
             if message:
                 message = ' '.join([milestone_text, message])
             else:

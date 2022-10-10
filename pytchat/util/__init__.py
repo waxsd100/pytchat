@@ -11,9 +11,13 @@ PATTERN = re.compile(r"(.*)\(([0-9]+)\)$")
 
 PATTERN_YTURL = re.compile(r"((?<=(v|V)/)|(?<=be/)|(?<=(\?|\&)v=)|(?<=embed/))([\w-]+)")
 
-PATTERN_CHANNEL = re.compile(r"\\\"channelId\\\":\\\"(.{24})\\\"")
+PATTERN_CHANNEL = re.compile(r"\"channelId\":\"(.{24})\"")
 
 PATTERN_M_CHANNEL = re.compile(r"\"channelId\":\"(.{24})\"")
+
+PATTERN_INITIAL_BOUNDARY_RE = r'\s*(?:var\s+(?:meta|head)|</script|\n)'
+
+PATTERN_YT_INITIAL_DATA_RE = r'(?:window\s*\[\s*["\']ytInitialData["\']\s*\]|ytInitialData)\s*=\s*({.+?})\s*;' + PATTERN_INITIAL_BOUNDARY_RE
 
 YT_VIDEO_ID_LENGTH = 11
 
@@ -100,7 +104,7 @@ def extract_video_id(url_or_id: str) -> str:
 
 
 def get_channelid(client, video_id):
-    resp = client.get("https://www.youtube.com/embed/{}".format(quote(video_id)), headers=config.headers)  
+    resp = client.get("https://www.youtube.com/watch?v={}".format(quote(video_id)), headers=config.headers)  
     match = re.search(PATTERN_CHANNEL, resp.text)
     try:
         if match is None:
@@ -113,7 +117,6 @@ def get_channelid(client, video_id):
 
 def get_channelid_2nd(client, video_id):
     resp = client.get("https://m.youtube.com/watch?v={}".format(quote(video_id)), headers=config.m_headers)  
-    
     match = re.search(PATTERN_M_CHANNEL, resp.text)
     if match is None:
         raise InvalidVideoIdException(f"Cannot find channel id for video id:{video_id}. This video id seems to be invalid.")
@@ -124,8 +127,28 @@ def get_channelid_2nd(client, video_id):
     return ret
 
 
+def get_continuation_from_html(client, video_id, topchat_only):
+    resp = client.get("https://www.youtube.com/live_chat?v={}".format(quote(video_id)), headers=config.headers)
+    match = re.search(PATTERN_YT_INITIAL_DATA_RE, resp.text)
+    if match is None:
+        return
+    try:
+        ret = match.group(1)
+    except IndexError:
+        return
+    ytInitialData_json = json.loads(ret)
+    try:
+        if topchat_only:
+            continuation = ytInitialData_json['contents']['liveChatRenderer']['header']['liveChatHeaderRenderer']['viewSelector']['sortFilterSubMenuRenderer']['subMenuItems'][0]['continuation']['reloadContinuationData']['continuation']
+        else:
+            continuation = ytInitialData_json['contents']['liveChatRenderer']['header']['liveChatHeaderRenderer']['viewSelector']['sortFilterSubMenuRenderer']['subMenuItems'][1]['continuation']['reloadContinuationData']['continuation']
+    except KeyError:
+        return
+    return continuation
+
+
 async def get_channelid_async(client, video_id):
-    resp = await client.get("https://www.youtube.com/embed/{}".format(quote(video_id)), headers=config.headers)  
+    resp = await client.get("https://www.youtube.com/watch?v={}".format(quote(video_id)), headers=config.headers)  
     match = re.search(PATTERN_CHANNEL, resp.text)
     try:
         if match is None:
