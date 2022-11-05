@@ -7,7 +7,10 @@ AUTHOR_IMAGEURL = "https://yt3.ggpht.com/584JjRp5QMuKbyduM_2k5RlXFqHJtQ0qLIPZpwb
 
 class LiveChatViewerEngagementMessageRenderer(BaseRenderer):
     def settype(self):
-        self.chat.type = "viewerEngagementMessage"
+        if self.item.get("icon", {}).get("iconType") == "POLL":
+            self.chat.type = "poll"
+        else:
+            self.chat.type = "viewerEngagementMessage"
 
     def get_authordetails(self):
         self.chat.author.badgeUrl = ""

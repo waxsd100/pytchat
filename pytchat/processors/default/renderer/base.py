@@ -1,3 +1,4 @@
+import time
 from datetime import datetime
 
 
@@ -16,7 +17,7 @@ class BaseRenderer:
 
     def get_snippet(self):
         self.chat.id = self.item.get('id')
-        timestampUsec = int(self.item.get("timestampUsec", 0))
+        timestampUsec = int(self.item.get("timestampUsec", time.time() * 1000000))
         self.chat.timestamp = int(timestampUsec / 1000)
         tst = self.item.get("timestampText")
         if tst:
