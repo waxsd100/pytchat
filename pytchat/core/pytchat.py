@@ -93,6 +93,7 @@ class PytchatCore:
         self.continuation = replay_continuation
         if interruptable:
             signal.signal(signal.SIGINT, lambda a, b: self.terminate())
+        self._livechat_json = None
         self._setup()
 
     def _setup(self):
@@ -159,8 +160,13 @@ class PytchatCore:
                 '''Try to fetch archive chat data.'''
                 self._parser.is_replay = True
                 self._fetch_url = config._smr
-                continuation = arcparam.getparam(
-                    self._video_id, self.seektime, self._topchat_only, util.get_channelid(client, self._video_id))
+                continuation =  util.get_continuation_from_html(
+                    self._client,
+                    self._video_id,
+                    self._topchat_only)
+                if continuation is None: # if could not get continuation from html
+                    continuation = arcparam.getparam(
+                        self._video_id, self.seektime, self._topchat_only, util.get_channelid(client, self._video_id))
                 livechat_json = self._get_livechat_json(
                     continuation, client, replay=True, offset_ms=self.seektime * 1000)
                 reload_continuation = self._parser.reload_continuation(
@@ -195,6 +201,7 @@ class PytchatCore:
             self._logger.error(f"[{self._video_id}]"
                                f"Exceeded retry count. Last error: {str(err)}")
             self._raise_exception(exceptions.RetryExceedMaxCount())
+        self._livechat_json = livechat_json
         return livechat_json
 
     def get(self):
