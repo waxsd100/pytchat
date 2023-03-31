@@ -52,7 +52,7 @@ class LiveChatPaidMessageRenderer(BaseRenderer):
         item = self.item
         try:
             headerOverlayImage = item.get("headerOverlayImage").get("thumbnails")[0].get("url")
-        except IndexError:
+        except Exception:
             headerOverlayImage = ""
         if headerOverlayImage.startswith("//"):
             headerOverlayImage = "https:" + headerOverlayImage
