@@ -9,6 +9,8 @@ class LiveChatViewerEngagementMessageRenderer(BaseRenderer):
     def settype(self):
         if self.item.get("icon", {}).get("iconType") == "POLL":
             self.chat.type = "poll"
+        elif self.item.get("icon", {}).get("iconType") == "CELEBRATION":
+            self.chat.type = "celebration"
         else:
             self.chat.type = "viewerEngagementMessage"
 
