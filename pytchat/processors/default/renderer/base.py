@@ -1,3 +1,4 @@
+import time
 from datetime import datetime
 
 
@@ -16,7 +17,7 @@ class BaseRenderer:
 
     def get_snippet(self):
         self.chat.id = self.item.get('id')
-        timestampUsec = int(self.item.get("timestampUsec", 0))
+        timestampUsec = int(self.item.get("timestampUsec", time.time() * 1000000))
         self.chat.timestamp = int(timestampUsec / 1000)
         tst = self.item.get("timestampText")
         if tst:
@@ -41,8 +42,14 @@ class BaseRenderer:
         )
         self.chat.author.channelId = self.item.get("authorExternalChannelId")
         self.chat.author.channelUrl = "http://www.youtube.com/channel/" + self.chat.author.channelId
-        self.chat.author.name = self.item["authorName"]["simpleText"]
-        self.chat.author.imageUrl = self.item["authorPhoto"]["thumbnails"][1]["url"]
+        if self.item.get("authorName"):
+            self.chat.author.name = self.item["authorName"].get("simpleText")
+        else:
+            self.chat.author.name = ""
+        if self.item.get("authorPhoto"):
+            self.chat.author.imageUrl = self.item["authorPhoto"]["thumbnails"][1]["url"]
+        else:
+            self.chat.author.imageUrl = ""
 
     def get_message(self, item):
         message = ''

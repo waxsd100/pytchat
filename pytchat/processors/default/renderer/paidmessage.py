@@ -23,6 +23,8 @@ class LiveChatPaidMessageRenderer(BaseRenderer):
             symbol) else symbol
         self.chat.bgColor = self.item.get("bodyBackgroundColor", 0)
         self.chat.colors = self.get_colors()
+        if self.item.get("headerOverlayImage"):
+            self.chat.headerOverlayImage = self.get_header_overlay_image()
 
     def get_amountdata(self, item):
         amountDisplayString = item["purchaseAmountText"]["simpleText"]
@@ -45,3 +47,13 @@ class LiveChatPaidMessageRenderer(BaseRenderer):
         colors.timestampColor = item.get("timestampColor", 0)
         colors.authorNameTextColor = item.get("authorNameTextColor", 0)
         return colors
+
+    def get_header_overlay_image(self):
+        item = self.item
+        try:
+            headerOverlayImage = item.get("headerOverlayImage").get("thumbnails")[0].get("url")
+        except Exception:
+            headerOverlayImage = ""
+        if headerOverlayImage.startswith("//"):
+            headerOverlayImage = "https:" + headerOverlayImage
+        return headerOverlayImage

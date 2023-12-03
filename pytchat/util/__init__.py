@@ -128,7 +128,7 @@ def get_channelid_2nd(client, video_id):
 
 
 def get_continuation_from_html(client, video_id, topchat_only):
-    resp = client.get("https://www.youtube.com/live_chat?v={}".format(quote(video_id)), headers=config.headers)
+    resp = client.get("https://www.youtube.com/watch?v={}".format(quote(video_id)), headers=config.headers)
     match = re.search(PATTERN_YT_INITIAL_DATA_RE, resp.text)
     if match is None:
         return
@@ -136,12 +136,12 @@ def get_continuation_from_html(client, video_id, topchat_only):
         ret = match.group(1)
     except IndexError:
         return
-    ytInitialData_json = json.loads(ret)
+    ytInitialData = json.loads(ret)
     try:
         if topchat_only:
-            continuation = ytInitialData_json['contents']['liveChatRenderer']['header']['liveChatHeaderRenderer']['viewSelector']['sortFilterSubMenuRenderer']['subMenuItems'][0]['continuation']['reloadContinuationData']['continuation']
+            continuation = ytInitialData['contents']['twoColumnWatchNextResults']['conversationBar']['liveChatRenderer']['header']['liveChatHeaderRenderer']['viewSelector']['sortFilterSubMenuRenderer']['subMenuItems'][0]['continuation']['reloadContinuationData']['continuation']
         else:
-            continuation = ytInitialData_json['contents']['liveChatRenderer']['header']['liveChatHeaderRenderer']['viewSelector']['sortFilterSubMenuRenderer']['subMenuItems'][1]['continuation']['reloadContinuationData']['continuation']
+            continuation = ytInitialData['contents']['twoColumnWatchNextResults']['conversationBar']['liveChatRenderer']['header']['liveChatHeaderRenderer']['viewSelector']['sortFilterSubMenuRenderer']['subMenuItems'][1]['continuation']['reloadContinuationData']['continuation']
     except KeyError:
         return
     return continuation
